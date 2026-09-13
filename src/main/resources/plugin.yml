@@ -1,0 +1,8 @@
+name: ManHunt
+version: '${version}'
+
+main: org.sdxmq.manHunt.ManHunt
+api-version: '26.2'
+load: POSTWORLD
+
+authors: [ SDXMQ ]
