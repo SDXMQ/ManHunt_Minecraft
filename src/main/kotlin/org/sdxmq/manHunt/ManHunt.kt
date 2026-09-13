@@ -12,11 +12,14 @@ class ManHunt : JavaPlugin() {
 
     override fun onEnable() {
         // 커맨드 등록
-        val command = getCommand("맨헌트")
-        if (command != null) {
-            val executor = ManHuntCommand()
-            command.setExecutor(executor)
-            command.tabCompleter = executor
+        val executor = ManHuntCommand()
+        getCommand("맨헌트")?.let {
+            it.setExecutor(executor)
+            it.tabCompleter = executor
+        }
+        getCommand("manhunt")?.let {
+            it.setExecutor(executor)
+            it.tabCompleter = executor
         }
 
         // 리스너 등록

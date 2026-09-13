@@ -11,6 +11,7 @@ commands:
   맨헌트:
     description: 맨헌트 메인 명령어
     permission: manhunt.admin
+    aliases: [manhunt]
 
 permissions:
   manhunt.admin:
