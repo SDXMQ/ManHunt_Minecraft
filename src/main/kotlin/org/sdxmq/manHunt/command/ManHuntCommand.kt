@@ -107,9 +107,9 @@ class ManHuntCommand : CommandExecutor, TabCompleter {
     override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
         val completions = mutableListOf<String>()
         if (args.size == 1) {
-            val options = listOf("시작", "종료", "헌터", "러너", "설정")
+            val options = listOf("시작", "종료", "러너", "설정")
             completions.addAll(options.filter { it.startsWith(args[0]) })
-        } else if (args.size == 2 && (args[0] == "헌터" || args[0] == "러너")) {
+        } else if (args.size == 2 && args[0] == "러너") {
             completions.addAll(Bukkit.getOnlinePlayers().map { it.name }.filter { it.startsWith(args[1], ignoreCase = true) })
         }
         return completions
