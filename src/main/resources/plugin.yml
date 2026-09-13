@@ -6,3 +6,13 @@ api-version: '26.2'
 load: POSTWORLD
 
 authors: [ SDXMQ ]
+
+commands:
+  맨헌트:
+    description: 맨헌트 메인 명령어
+    permission: manhunt.admin
+
+permissions:
+  manhunt.admin:
+    description: 맨헌트 설정 및 게임 제어 권한
+    default: op
