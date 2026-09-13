@@ -29,6 +29,7 @@ tasks {
         // Your plugin's jar (or shadowJar if present) will be used automatically.
         minecraftVersion("26.2")
         jvmArgs("-Xms2G", "-Xmx2G")
+        standardInput = System.`in`
     }
 
     processResources {
