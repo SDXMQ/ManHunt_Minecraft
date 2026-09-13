@@ -70,52 +70,38 @@ class GameTickTask : Runnable {
             Bukkit.broadcast(Component.text("[맨헌트] 헌터 출발까지 ${startRemain}초 남았습니다!").color(NamedTextColor.YELLOW))
         }
 
-        // 2. 나침반 타겟 갱신 및 나침반 중복 제거
+        // 2. 나침반 타겟 갱신 (추적 나침반을 직접 제작하여 소지한 헌터만 대상)
         val onlineHunters = Bukkit.getOnlinePlayers().filter { GameManager.hunters.contains(it.uniqueId) }
         val aliveRunners = Bukkit.getOnlinePlayers().filter { 
             GameManager.runners.contains(it.uniqueId) && !GameManager.deadRunners.contains(it.uniqueId) 
         }
-
+        val trackerName = "러너 추적 나침반"
         for (hunter in onlineHunters) {
-            // 나침반 개수 정리 (1개만 유지)
-            val compassCount = hunter.inventory.contents.count { it?.type == Material.COMPASS }
-            if (compassCount > 1) {
-                var removed = 0
-                val targetRemove = compassCount - 1
-                for (i in 0 until hunter.inventory.size) {
-                    val item = hunter.inventory.getItem(i)
-                    if (item?.type == Material.COMPASS) {
-                        hunter.inventory.setItem(i, null)
-                        removed++
-                        if (removed >= targetRemove) break
-                    }
-                }
-            } else if (compassCount == 0 && !GameManager.frozenPlayers.containsKey(hunter.uniqueId)) {
-                // 게임 중인데 나침반이 없다면 1개 지급
-                val compass = ItemStack(Material.COMPASS)
-                compass.editMeta { meta ->
-                    meta.displayName(Component.text("러너 추적 나침반").color(NamedTextColor.GREEN))
-                }
-                hunter.inventory.addItem(compass)
-            }
-
-            // 동결 중이 아니면 타겟 갱신
+            // 동결 중이 아닐 때만 갱신
             if (!GameManager.frozenPlayers.containsKey(hunter.uniqueId)) {
-                var targetRunner: Player? = null
-                var minDistance = Double.MAX_VALUE
+                val hasTracker = hunter.inventory.contents.any { item ->
+                    item?.type == Material.COMPASS && item.itemMeta?.displayName()?.let { name ->
+                        net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText().serialize(name) == trackerName
+                    } == true
+                }
 
-                for (runner in aliveRunners) {
-                    if (runner.world == hunter.world) {
-                        val dist = hunter.location.distance(runner.location)
-                        if (dist < minDistance) {
-                            minDistance = dist
-                            targetRunner = runner
+                if (hasTracker) {
+                    var targetRunner: Player? = null
+                    var minDistance = Double.MAX_VALUE
+
+                    for (runner in aliveRunners) {
+                        if (runner.world == hunter.world) {
+                            val dist = hunter.location.distance(runner.location)
+                            if (dist < minDistance) {
+                                minDistance = dist
+                                targetRunner = runner
+                            }
                         }
                     }
-                }
 
-                if (targetRunner != null) {
-                    hunter.compassTarget = targetRunner.location
+                    if (targetRunner != null) {
+                        hunter.compassTarget = targetRunner.location
+                    }
                 }
             }
         }
