@@ -11,7 +11,7 @@ import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffectType
 import org.sdxmq.manHunt.manager.GameManager
-import java.time.Du
+import java.time.Duration
 import org.bukkit.inventory.ItemStack
 
 class GameTickTask : Runnable {
